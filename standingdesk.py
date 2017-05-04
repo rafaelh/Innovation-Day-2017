@@ -28,7 +28,7 @@ while True:
         except:
             print("sending failed.")
 
-    if io.input(DESK_PIN) is False:
+    if not io.input(DESK_PIN):
         # The switch is closed
         print("Desk: Seated Position. Sending to Azure... ", end='')
         try:
@@ -40,7 +40,7 @@ while True:
 
     time.sleep(10)
 
-    
+
 #start = time.time()
 #print("hello")
 #end = time.time()
