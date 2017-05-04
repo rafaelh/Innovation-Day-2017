@@ -27,12 +27,12 @@ while True:
         print("Desk: Standing Position. Sending to Azure...",)
         SBS.send_event('stand-and-deliver', '{ "DeviceId": "StandingDesk1", "State": "Standing" }')
         print("done.")
-        DESK = 0 # set door to its initial value
+#        DESK = 0 # set door to its initial value
         time.sleep(10) # wait 10 seconds before the next action
         ## if the switch is closed and door does not equal 1
-        if (io.input(desk_pin)==False and DESK!=1):
+        if (io.input(desk_pin)==False):
             print("Desk: Seated Position. Sending to Azure...")
             SBS.send_event('stand-and-deliver', '{ "DeviceId": "StandingDesk1", "State": "Seated" }')
             print("done.")
-            DESK = 1
+#            DESK = 1
             # set door so that this loop won't act again until the switch has been opened
