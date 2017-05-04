@@ -19,6 +19,16 @@ io.setmode(io.BCM)
 # Activate input with the built-in PullUp resistor
 io.setup(DESK_PIN, io.IN, pull_up_down=io.PUD_UP)
 
+def reportstate(STATE):
+    print("Desk: %s position. Sending to Azure...", end='' % STATE)
+    event = '{ "DeviceId": "StandingDesk1", "State": "%s" }' % STATE
+    try:
+        SBS.send_event('stand-and-deliver', event)
+        print("done.")
+    except:
+        print("sending failed.")
+
+
 while True:
     if io.input(DESK_PIN):
         STATE = 'Standing'
@@ -39,10 +49,10 @@ while True:
             print("done.")
         except:
             print("sending failed.")
-    
+
     if STATE != LAST_STATE:
         print("State Changed")
-    LAST_STATE = STATE  
+    LAST_STATE = STATE
     time.sleep(10)
 
 
