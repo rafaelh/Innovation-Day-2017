@@ -4,7 +4,6 @@ import time
 from azure.servicebus import ServiceBusService
 import RPi.GPIO as io
 
-STATE = ''
 LAST_STATE = ''
 TIME_IN_STATE = time.time()
 DESK_PIN = 23
@@ -20,10 +19,10 @@ io.setmode(io.BCM)
 # Activate input with the built-in PullUp resistor
 io.setup(DESK_PIN, io.IN, pull_up_down=io.PUD_UP)
 
-def reportstate(STATE):
-    """ Prints the state to the screen and sends to Azure """
-    print("Desk: %s position. Sending to Azure...", end='' % STATE)
-    event = '{ "DeviceId": "StandingDesk1", "State": "%s" }' % STATE
+def reportstate(state):
+    " Prints state to the console and sends to Azure "
+    print("Desk: %s position. Sending to Azure...", end='' % state)
+    event = '{ "DeviceId": "StandingDesk1", "State": "%s" }' % state
     try:
         SBS.send_event('stand-and-deliver', event)
         print("done.")
@@ -32,18 +31,18 @@ def reportstate(STATE):
 
 while True:
     if io.input(DESK_PIN):
-        STATE = 'Standing'
-        reportstate(STATE)
+        state = 'Standing'
+        reportstate(state)
 
     if not io.input(DESK_PIN):
-        STATE = 'Seated'
-        reportstate(STATE)
+        state = 'Seated'
+        reportstate(state)
 
-    if STATE != LAST_STATE:
+    if state != LAST_STATE:
         CURRENT_TIME = time.time()
         print("State Changed. Time in last state: ", TIME_IN_STATE - CURRENT_TIME)
 
-    LAST_STATE = STATE
+    LAST_STATE = state
     time.sleep(10)
 
 
