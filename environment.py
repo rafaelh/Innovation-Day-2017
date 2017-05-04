@@ -51,15 +51,15 @@ while True:
     t = thp - ((t_cpu-thp)/1.5)
     t = get_smooth(t)
     t = round(t,1)
-    reportstate("temperature",t);
+    reportstate("Temperature",t)
 
-    p = sense.get_pressure();
+    p = sense.get_pressure()
     p = round(p,1)
-    reportstate("pressure",p);
+    reportstate("Pressure",p)
 
-    h = sense.get_humidity();
+    h = sense.get_humidity()
     h = round(h,1);
-    reportstate("humidity",h);
+    reportstate("Humidity",h)
 
     print("Temp = {0}, Pressure = {1}, Humidity = {2}".format(t, p, h))
 
