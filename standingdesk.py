@@ -10,20 +10,17 @@ SBS = ServiceBusService("stand-and-deliver",
                         shared_access_key_name=key_name,
                         shared_access_key_value=key_value)
 
-## set GPIO mode to BCM
-## this takes GPIO number instead of pin number
+## Set GPIO mode to BCM, busing the GPIO number (in this case, 23)
 io.setmode(io.BCM)
-
-## enter the number of whatever GPIO pin you're using
 desk_pin = 23
 
-## use the built-in pull-up resistor & initialize the desk switch
+## Use the built-in PullUp resistor & initialize the desk switch
 io.setup(desk_pin, io.IN, pull_up_down=io.PUD_UP)  # activate input with PullUp
-DESK = 0
+DESK = 1
 
 while True:
-    ## if the switch is open
     if io.input(desk_pin):
+        # The switch is open
         print("Desk: Standing Position. Sending to Azure...",)
         SBS.send_event('stand-and-deliver', '{ "DeviceId": "StandingDesk1", "State": "Standing" }')
         print("done.")
