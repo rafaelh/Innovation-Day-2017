@@ -21,7 +21,7 @@ io.setup(DESK_PIN, io.IN, pull_up_down=io.PUD_UP)
 
 def reportstate(state):
     " Prints state to the console and sends to Azure "
-    print("Desk: %s position. Sending to Azure...", end='' % state)
+    print("Desk: {} position. Sending to Azure...".format(state), end='')
     event = '{ "DeviceId": "StandingDesk1", "State": "%s" }' % state
     try:
         SBS.send_event('stand-and-deliver', event)
