@@ -31,22 +31,16 @@ def reportstate(state):
 
 while True:
     if io.input(DESK_PIN):
-        state = 'Standing'
-        reportstate(state)
+        STATE = 'Standing'
+        reportstate(STATE)
 
     if not io.input(DESK_PIN):
-        state = 'Seated'
-        reportstate(state)
+        STATE = 'Seated'
+        reportstate(STATE)
 
-    if state != LAST_STATE:
+    if STATE != LAST_STATE:
         CURRENT_TIME = time.time()
-        print("State Changed. Time in last state: ", TIME_IN_STATE - CURRENT_TIME)
+        print("State Changed. Time in last state: ", CURRENT_TIME - TIME_IN_STATE)
 
-    LAST_STATE = state
-    time.sleep(10)
-
-
-#statestart = time.time()
-#print("hello")
-#stateend = time.time()
-#print(end - start)
+    LAST_STATE = STATE
+    time.sleep(5)
