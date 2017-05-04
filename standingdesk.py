@@ -4,6 +4,8 @@ import time
 from azure.servicebus import ServiceBusService
 import RPi.GPIO as io
 
+STATE = ''
+LAST_STATE=''
 DESK_PIN = 23
 KEY_NAME = "RootManageSharedAccessKey"
 KEY_VALUE = "pjxZvmffk+hhDTXST7TzvShuZ+jxgRiKLc1T4yLGOGw="
@@ -19,7 +21,7 @@ io.setup(DESK_PIN, io.IN, pull_up_down=io.PUD_UP)
 
 while True:
     if io.input(DESK_PIN):
-        # The switch is open
+        STATE = 'Standing'
         print("Desk: Standing Position. Sending to Azure... ", end='')
         try:
             SBS.send_event('stand-and-deliver',
@@ -29,7 +31,7 @@ while True:
             print("sending failed.")
 
     if not io.input(DESK_PIN):
-        # The switch is closed
+        STATE = 'Seated'
         print("Desk: Seated Position. Sending to Azure... ", end='')
         try:
             SBS.send_event('stand-and-deliver',
@@ -37,11 +39,14 @@ while True:
             print("done.")
         except:
             print("sending failed.")
-
+    
+    if STATE != LAST_STATE:
+        print("State Changed")
+    LAST_STATE = STATE  
     time.sleep(10)
 
 
-#start = time.time()
+#statestart = time.time()
 #print("hello")
-#end = time.time()
+#stateend = time.time()
 #print(end - start)
