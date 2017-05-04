@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import time
 import sys
 from azure.servicebus import ServiceBusService
@@ -27,11 +29,12 @@ while True:
         except:
             print("sending failed.")
 
-    if io.input(DESK_PIN)==False:
+    if io.input(DESK_PIN) == False:
         # The switch is closed
         print("Desk: Seated Position. Sending to Azure... ", end='')
         try:
-            SBS.send_event('stand-and-deliver', '{ "DeviceId": "StandingDesk1", "State": "Seated" }')
+            SBS.send_event('stand-and-deliver',
+                           '{ "DeviceId": "StandingDesk1", "State": "Seated" }')
             print("done.")
         except:
             print("sending failed.")
