@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 
 import time
-import sys
 from azure.servicebus import ServiceBusService
 import RPi.GPIO as io
 
@@ -29,7 +28,7 @@ while True:
         except:
             print("sending failed.")
 
-    if io.input(DESK_PIN) == False:
+    if io.input(DESK_PIN) is False:
         # The switch is closed
         print("Desk: Seated Position. Sending to Azure... ", end='')
         try:
