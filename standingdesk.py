@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import time
+import datetime
 from azure.servicebus import ServiceBusService
 import RPi.GPIO as io
 
@@ -29,6 +30,7 @@ def reportstate(state):
     except:
         print("sending failed.")
 
+print("Polling every 5 seconds...")
 while True:
     if io.input(DESK_PIN):
         STATE = 'Standing'
@@ -40,7 +42,8 @@ while True:
 
     if STATE != LAST_STATE:
         CURRENT_TIME = time.time()
-        print("State Changed. Time in last state: ", CURRENT_TIME - TIME_IN_STATE)
+        ELAPSED_TIME = str(datetime.timedelta(seconds=int(CURRENT_TIME - TIME_IN_STATE)))
+        print("State Changed. Time in last state:", ELAPSED_TIME)
 
     LAST_STATE = STATE
     time.sleep(5)
