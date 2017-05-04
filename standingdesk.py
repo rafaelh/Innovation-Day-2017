@@ -39,3 +39,9 @@ while True:
             print("sending failed.")
 
     time.sleep(10)
+
+    
+#start = time.time()
+#print("hello")
+#end = time.time()
+#print(end - start)
