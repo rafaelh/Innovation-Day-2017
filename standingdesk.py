@@ -5,7 +5,8 @@ from azure.servicebus import ServiceBusService
 import RPi.GPIO as io
 
 STATE = ''
-LAST_STATE=''
+LAST_STATE = ''
+TIME_IN_STATE = time.time()
 DESK_PIN = 23
 KEY_NAME = "RootManageSharedAccessKey"
 KEY_VALUE = "pjxZvmffk+hhDTXST7TzvShuZ+jxgRiKLc1T4yLGOGw="
@@ -20,6 +21,7 @@ io.setmode(io.BCM)
 io.setup(DESK_PIN, io.IN, pull_up_down=io.PUD_UP)
 
 def reportstate(STATE):
+    """ Prints the state to the screen and sends to Azure """
     print("Desk: %s position. Sending to Azure...", end='' % STATE)
     event = '{ "DeviceId": "StandingDesk1", "State": "%s" }' % STATE
     try:
@@ -28,30 +30,19 @@ def reportstate(STATE):
     except:
         print("sending failed.")
 
-
 while True:
     if io.input(DESK_PIN):
         STATE = 'Standing'
-        print("Desk: Standing Position. Sending to Azure... ", end='')
-        try:
-            SBS.send_event('stand-and-deliver',
-                           '{ "DeviceId": "StandingDesk1", "State": "Standing" }')
-            print("done.")
-        except:
-            print("sending failed.")
+        reportstate(STATE)
 
     if not io.input(DESK_PIN):
         STATE = 'Seated'
-        print("Desk: Seated Position. Sending to Azure... ", end='')
-        try:
-            SBS.send_event('stand-and-deliver',
-                           '{ "DeviceId": "StandingDesk1", "State": "Seated" }')
-            print("done.")
-        except:
-            print("sending failed.")
+        reportstate(STATE)
 
     if STATE != LAST_STATE:
-        print("State Changed")
+        CURRENT_TIME = time.time()
+        print("State Changed. Time in last state: ", TIME_IN_STATE - CURRENT_TIME)
+
     LAST_STATE = STATE
     time.sleep(10)
 
