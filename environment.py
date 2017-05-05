@@ -73,23 +73,23 @@ def updatedisplay(pageIndex, stepIndex, delta):
 
     if pageIndex == 0: # T (Temperature)
         color = r
-        image[9] = image[10] = image[11] = image[18] = image[26] = image[34] = image[42] = image[50] = color
+        image[8] = image[9] = image[10] = image[11] = image[12] = image[18] = image[26] = image[34] = image[42] = image[50] = color
     elif pageIndex == 1: # H (Humidity)
         color = b
-        image[9] = image[11] = image[17] = image[19] = image[25] = image[26] = image[27] = image[33] = image[35] = image[41] = image[43] = image[49] = image[51] = color
+        image[8] = image[11] = image[16] = image[19] = image[24] = image[25] = image[26] = image[27] = image[32] = image[35] = image[40] = image[43] = image[48] = image[51] = color
     else: # P (Pressure)
         color = y
-        image[9] = image[10] = image[11] = image[17] = image[19] = image[25] = image[27] = image[33] = image[34] = image[35] = image[41] = image[49] = color
+        image[8] = image[9] = image[10] = image[11] = image[16] = image[19] = image[24] = image[27] = image[32] = image[33] = image[34] = image[35] = image[40] = image[48] = color
 
-    if delta > 0:
+    if delta > 0: # up arrow animation step
         image[stepIndex * 8 + 30] = color
         image[stepIndex * 8 + 21] = color
         image[stepIndex * 8 + 23] = color
-    elif delta < 0:
+    elif delta < 0: # down arrow animation step
         image[(stepLength - stepIndex - 1) * 8 + 29] = color
         image[(stepLength - stepIndex - 1) * 8 + 31] = color
         image[(stepLength - stepIndex - 1) * 8 + 22] = color
-    else:
+    else: # -
         image[37] = image[38] = image[39] = color
 
     sense.set_pixels(image)
@@ -200,4 +200,4 @@ while True:
     standup_segments.timer(startMins, randState)
     reportReadings()
 
-    sense.show_message("Hello World!")
+    sense.show_message("Stand and Deliver!")

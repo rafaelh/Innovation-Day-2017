@@ -51,12 +51,12 @@ O, O, O, O, O, O, O, O
   ], # zero
   [
 O, O, O, O, O, O, O, O,
-O, O, O, X, O, O, O, O,
-O, O, O, X, O, O, O, O,
-O, O, O, X, O, O, O, O,
-O, O, O, X, O, O, O, O,
-O, O, O, X, O, O, O, O,
-O, O, O, X, O, O, O, O,
+O, O, X, O, O, O, O, O,
+O, O, X, O, O, O, O, O,
+O, O, X, O, O, O, O, O,
+O, O, X, O, O, O, O, O,
+O, O, X, O, O, O, O, O,
+O, O, X, O, O, O, O, O,
 O, O, O, O, O, O, O, O
   ], # one
   [
