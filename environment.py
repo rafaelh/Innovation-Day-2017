@@ -2,9 +2,13 @@
 
 import os
 import time
+import misc
 from azure.servicebus import ServiceBusService
 from sense_hat import SenseHat
 import RPi.GPIO as io
+import Standup_Numbers
+import standup_segments
+from random import randint
 
 sense = SenseHat()
 
@@ -67,15 +71,15 @@ def updatedisplay(pageIndex, stepIndex, delta):
     e,e,e,e,e,e,e,e
     ]
 
-    if pageIndex == 0:
+    if pageIndex == 0: # T (Temperature)
         color = r
-        image[17] = image[18] = image[19] = image[26] = image[34] = image[42] = color
-    elif pageIndex == 1:
+        image[9] = image[10] = image[11] = image[18] = image[26] = image[34] = image[42] = image[50] = color
+    elif pageIndex == 1: # H (Humidity)
         color = b
-        image[17] = image[19] = image[25] = image[26] = image[27] = image[33] = image[35] = image[41] = image[43] = color
-    else:
+        image[9] = image[11] = image[17] = image[19] = image[25] = image[26] = image[27] = image[33] = image[35] = image[41] = image[43] = image[49] = image[51] = color
+    else: # P (Pressure)
         color = y
-        image[17] = image[18] = image[19] = image[25] = image[27] = image[33] = image[34] = image[35] = image[41] = color
+        image[9] = image[10] = image[11] = image[17] = image[19] = image[25] = image[27] = image[33] = image[34] = image[35] = image[41] = image[49] = color
 
     if delta > 0:
         image[stepIndex * 8 + 30] = color
@@ -93,7 +97,8 @@ def updatedisplay(pageIndex, stepIndex, delta):
 oldt = 0
 oldh = 0
 oldp = 0
-while True:
+
+def getCPUTemp():
     th = sense.get_temperature_from_humidity()
     tp = sense.get_temperature_from_pressure()
     t_cpu = get_cpu_temp()
@@ -101,8 +106,19 @@ while True:
     t = thp - ((t_cpu-thp)/1.5)
     t = get_smooth(t)
     t = round(t,1)
-    reportstate("Temperature",t)
+    return t
 
+def getPressure():
+    p = sense.get_pressure()
+    p = round(p,1)
+    return p
+
+def getHumidity():
+    h = sense.get_humidity()
+    h = round(h,1);
+    return h
+
+def displayCPUTemp(oldt, t):
     diff = 0
     if oldt != 0:
         diff = oldt - t
@@ -113,11 +129,9 @@ while True:
     time.sleep(0.4)
     updatedisplay(0,2,diff)
     time.sleep(0.4)
+    return t
 
-    p = sense.get_pressure()
-    p = round(p,1)
-    reportstate("Pressure",p)
-
+def displayPressure(oldp, p):
     diff = 0
     if oldp != 0:
         diff = oldp - p
@@ -128,11 +142,9 @@ while True:
     time.sleep(0.4)
     updatedisplay(2,2,diff)
     time.sleep(0.4)
+    return p
 
-    h = sense.get_humidity()
-    h = round(h,1);
-    reportstate("Humidity",h)
-
+def displayHumidity(oldh, h):
     diff = 0
     if oldh != 0:
         diff = oldh - h
@@ -143,6 +155,49 @@ while True:
     time.sleep(0.4)
     updatedisplay(1,2,diff)
     time.sleep(0.4)
+    return h
 
-    print("Temp = {0}, Pressure = {1}, Humidity = {2}".format(t, p, h))
+def getReadings():
+    t = getCPUTemp()
+    p = getPressure()
+    h = getHumidity()
+    return t,p,h
 
+def reportReadings():
+    reportstate("Temperature",t)
+    reportstate("Pressure",p)
+    reportstate("Humidity",h)
+
+while True:
+    randHour = randint(2,5)
+    randState = randint(0,1)
+    startMins = randint(0,3) * 60
+    if startMins > 200:
+        startMins = 200
+        
+    x = 0
+    while x < 3:
+        t,p,h = getReadings()
+            
+        oldt = displayCPUTemp(oldt, t)
+        oldp = displayPressure(oldp, p)
+        oldh = displayHumidity(oldh, h)
+
+        reportReadings()
+            
+        print("Temp = {0}, Pressure = {1}, Humidity = {2}".format(t, p, h))
+        x = x+1
+
+    t,p,h = getReadings()
+            
+    oldt = displayCPUTemp(oldt, t)
+    oldp = displayPressure(oldp, p)
+    oldh = displayHumidity(oldh, h)
+        
+    Standup_Numbers.demoChangeStart(randHour,randState)
+    reportReadings()
+
+    standup_segments.timer(startMins, randState)
+    reportReadings()
+
+    sense.show_message("Hello World!")
