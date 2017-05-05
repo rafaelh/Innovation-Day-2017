@@ -98,7 +98,7 @@ oldt = 0
 oldh = 0
 oldp = 0
 
-def getCPUTemp():
+def getTemp():
     th = sense.get_temperature_from_humidity()
     tp = sense.get_temperature_from_pressure()
     t_cpu = get_cpu_temp()
@@ -118,7 +118,7 @@ def getHumidity():
     h = round(h,1);
     return h
 
-def displayCPUTemp(oldt, t):
+def displayTemp(oldt, t):
     diff = 0
     if oldt != 0:
         diff = oldt - t
@@ -158,7 +158,7 @@ def displayHumidity(oldh, h):
     return h
 
 def getReadings():
-    t = getCPUTemp()
+    t = getTemp()
     p = getPressure()
     h = getHumidity()
     return t,p,h
@@ -179,7 +179,7 @@ while True:
     while x < 3:
         t,p,h = getReadings()
             
-        oldt = displayCPUTemp(oldt, t)
+        oldt = displayTemp(oldt, t)
         oldp = displayPressure(oldp, p)
         oldh = displayHumidity(oldh, h)
 
@@ -190,7 +190,7 @@ while True:
 
     t,p,h = getReadings()
             
-    oldt = displayCPUTemp(oldt, t)
+    oldt = displayTemp(oldt, t)
     oldp = displayPressure(oldp, p)
     oldh = displayHumidity(oldh, h)
         
@@ -200,4 +200,4 @@ while True:
     standup_segments.timer(startMins, randState)
     reportReadings()
 
-    sense.show_message("Stand and Deliver!")
+    sense.show_message("Hello World!")
