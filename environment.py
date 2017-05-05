@@ -200,4 +200,4 @@ while True:
     standup_segments.timer(startMins, randState)
     reportReadings()
 
-    sense.show_message("Hello World!")
+    sense.show_message("Stand and Deliver!")
