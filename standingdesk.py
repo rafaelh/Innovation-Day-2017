@@ -8,9 +8,9 @@ import RPi.GPIO as io
 LAST_STATE = ''
 TIME_IN_STATE = time.time()
 DESK_PIN = 23
-KEY_NAME = "RootManageSharedAccessKey"
-KEY_VALUE = "pjxZvmffk+hhDTXST7TzvShuZ+jxgRiKLc1T4yLGOGw="
-SBS = ServiceBusService("stand-and-deliver",
+KEY_NAME = "e.g. RootManageSharedAccessKey"
+KEY_VALUE = "e. g. pjxZvmffk+h... etc"
+SBS = ServiceBusService("InsertYourNamespace",
                         shared_access_key_name=KEY_NAME,
                         shared_access_key_value=KEY_VALUE)
 

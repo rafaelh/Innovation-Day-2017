@@ -59,4 +59,3 @@ def timer(startMins, state):
     if state == 0:
         alternateState = 1
         flashArrow(alternateState)
-
