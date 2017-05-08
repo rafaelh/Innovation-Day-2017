@@ -2,19 +2,17 @@
 
 import os
 import time
-import misc
+from random import randint
 from azure.servicebus import ServiceBusService
 from sense_hat import SenseHat
 import RPi.GPIO as io
 import Standup_Numbers
 import standup_segments
-from random import randint
 
 sense = SenseHat()
-
-KEY_NAME = "RootManageSharedAccessKey"
-KEY_VALUE = "pjxZvmffk+hhDTXST7TzvShuZ+jxgRiKLc1T4yLGOGw="
-SBS = ServiceBusService("stand-and-deliver",
+KEY_NAME = "e.g. ManageSharedAccessKey"
+KEY_VALUE = "e.g. pjxZvmffk+... etc"
+SBS = ServiceBusService("InsertyourNamespace",
                         shared_access_key_name=KEY_NAME,
                         shared_access_key_value=KEY_VALUE)
 # Colors
@@ -29,25 +27,24 @@ e = (0, 0, 0)
 
 def get_cpu_temp():
     res = os.popen("vcgencmd measure_temp").readline()
-    t = float(res.replace("temp=","").replace("'C\n",""))
-    return(t)
+    t = float(res.replace("temp=", "").replace("'C\n", ""))
+    return t
 
 
 def get_smooth(x):
-    if not hasattr(get_smooth,"t"):
-        get_smooth.t = [x,x,x]
+    if not hasattr(get_smooth, "t"):
+        get_smooth.t = [x, x, x]
     get_smooth.t[2] = get_smooth.t[1]
     get_smooth.t[1] = get_smooth.t[0]
     get_smooth.t[0] = x
     xs = (get_smooth.t[0]+get_smooth.t[1]+get_smooth.t[2])/3
-    return(xs)
+    return xs
 
 
 def reportstate(environment, state):
     " Prints state to the console and sends to Azure "
-    #print("Sending to Azure...")
-    event = '{ "DeviceId": "StandingDesk2", "%s": "%s" }' % (environment,state)
-    #print(event)
+    print("Sending to Azure...")
+    event = '{ "DeviceId": "StandingDesk2", "%s": "%s" }' % (environment, state)
 
     try:
         SBS.send_event('stand-and-deliver', event)
@@ -61,15 +58,15 @@ def updatedisplay(pageIndex, stepIndex, delta):
     stepLength = 3 # Assuming three frames of animation
     color = e
     image = [
-    e,e,e,e,e,e,e,e,
-    e,e,e,e,e,e,e,e,
-    e,e,e,e,e,e,e,e,
-    e,e,e,e,e,e,e,e,
-    e,e,e,e,e,e,e,e,
-    e,e,e,e,e,e,e,e,
-    e,e,e,e,e,e,e,e,
-    e,e,e,e,e,e,e,e
-    ]
+        e, e, e, e, e, e, e, e,
+        e, e, e, e, e, e, e, e,
+        e, e, e, e, e, e, e, e,
+        e, e, e, e, e, e, e, e,
+        e, e, e, e, e, e, e, e,
+        e, e, e, e, e, e, e, e,
+        e, e, e, e, e, e, e, e,
+        e, e, e, e, e, e, e, e,
+        ]
 
     if pageIndex == 0: # T (Temperature)
         color = r
@@ -105,17 +102,17 @@ def getTemp():
     thp = (th+tp)/2
     t = thp - ((t_cpu-thp)/1.5)
     t = get_smooth(t)
-    t = round(t,1)
+    t = round(t, 1)
     return t
 
 def getPressure():
     p = sense.get_pressure()
-    p = round(p,1)
+    p = round(p, 1)
     return p
 
 def getHumidity():
     h = sense.get_humidity()
-    h = round(h,1);
+    h = round(h, 1);
     return h
 
 def displayTemp(oldt, t):
@@ -123,11 +120,11 @@ def displayTemp(oldt, t):
     if oldt != 0:
         diff = oldt - t
     oldt = t
-    updatedisplay(0,0,diff)
+    updatedisplay(0, 0, diff)
     time.sleep(0.4)
-    updatedisplay(0,1,diff)
+    updatedisplay(0, 1, diff)
     time.sleep(0.4)
-    updatedisplay(0,2,diff)
+    updatedisplay(0, 2, diff)
     time.sleep(0.4)
     return t
 
@@ -136,11 +133,11 @@ def displayPressure(oldp, p):
     if oldp != 0:
         diff = oldp - p
     oldp = p
-    updatedisplay(2,0,diff)
+    updatedisplay(2, 0, diff)
     time.sleep(0.4)
-    updatedisplay(2,1,diff)
+    updatedisplay(2, 1, diff)
     time.sleep(0.4)
-    updatedisplay(2,2,diff)
+    updatedisplay(2, 2, diff)
     time.sleep(0.4)
     return p
 
@@ -149,11 +146,11 @@ def displayHumidity(oldh, h):
     if oldh != 0:
         diff = oldh - h
     oldh = h
-    updatedisplay(1,0,diff)
+    updatedisplay(1, 0, diff)
     time.sleep(0.4)
-    updatedisplay(1,1,diff)
+    updatedisplay(1, 1, diff)
     time.sleep(0.4)
-    updatedisplay(1,2,diff)
+    updatedisplay(1, 2, diff)
     time.sleep(0.4)
     return h
 
@@ -161,40 +158,40 @@ def getReadings():
     t = getTemp()
     p = getPressure()
     h = getHumidity()
-    return t,p,h
+    return t, p, h
 
 def reportReadings():
-    reportstate("Temperature",t)
-    reportstate("Pressure",p)
-    reportstate("Humidity",h)
+    reportstate("Temperature", t)
+    reportstate("Pressure", p)
+    reportstate("Humidity", h)
 
 while True:
-    randHour = randint(2,5)
-    randState = randint(0,1)
-    startMins = randint(0,3) * 60
+    randHour = randint(2, 5)
+    randState = randint(0, 1)
+    startMins = randint(0, 3) * 60
     if startMins > 200:
         startMins = 200
-        
+
     x = 0
     while x < 3:
-        t,p,h = getReadings()
-            
+        t, p, h = getReadings()
+
         oldt = displayTemp(oldt, t)
         oldp = displayPressure(oldp, p)
         oldh = displayHumidity(oldh, h)
 
         reportReadings()
-            
+
         print("Temp = {0}, Pressure = {1}, Humidity = {2}".format(t, p, h))
         x = x+1
 
-    t,p,h = getReadings()
-            
+    t, p, h = getReadings()
+
     oldt = displayTemp(oldt, t)
     oldp = displayPressure(oldp, p)
     oldh = displayHumidity(oldh, h)
-        
-    Standup_Numbers.demoChangeStart(randHour,randState)
+
+    Standup_Numbers.demoChangeStart(randHour, randState)
     reportReadings()
 
     standup_segments.timer(startMins, randState)
