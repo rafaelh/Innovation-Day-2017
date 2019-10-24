@@ -94,7 +94,7 @@ Pillow==6.2.0
 pycparser==2.18
 PyJWT==1.6.4
 python-dateutil==2.7.3
-requests==2.19.1
+requests==2.20.0
 requests-oauthlib==1.0.0
 SecretStorage==3.0.1
 sense-hat==2.2.0
