@@ -90,7 +90,7 @@ msrestazure==0.4.34
 numpy==1.15.0
 oauthlib==2.1.0
 pigpio==1.40.post1
-Pillow==5.2.0
+Pillow==6.2.0
 pycparser==2.18
 PyJWT==1.6.4
 python-dateutil==2.7.3
